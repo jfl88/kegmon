@@ -1,0 +1,26 @@
+{
+  "name": "kegmon",
+  "version": "0.0.1",
+  "description": "Kegerator Monitor API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jfl88/kegmon.git"
+  },
+  "keywords": [
+    "Kegerator",
+    "RaspberryPi"
+  ],
+  "author": "Jason Lyons",
+  "license": "GPL",
+  "bugs": {
+    "url": "https://github.com/jfl88/kegmon/issues"
+  },
+  "homepage": "https://github.com/jfl88/kegmon",
+  "dependencies": {
+    "express": "^4.12.4"
+  }
+}
