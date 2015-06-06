@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/jfl88/kegmon",
   "dependencies": {
-    "express": "^4.12.4"
+    "express": "^4.12.4",
+    "mcp3008": "0.0.1",
+    "onoff": "1.0.2"
   }
 }
