@@ -26,8 +26,7 @@ function getDateTime() {
     return year + "-" + month + "-" + day + " " + hour + ":" + min + ":" + sec;
 }
 
-var inputs = [ { time: 'Temperature', value: 25.4 },
-               { time: 'flow1', value: 100 } ];
+var inputs = [], inputIdx = 0;
 
 var config = require('./config.json')
     , username = config['user']
@@ -39,7 +38,10 @@ var data = {
     'x': [],
     'y': [],
     'type':'scatter',
-    'mode':'lines'
+    'mode':'lines',
+    'stream': {
+        'token': 'gx2dki2d1z'
+    }
 }
 
 var graphOptions = {
@@ -52,8 +54,22 @@ var graphOptions = {
 }
 
 adc.poll(channel, 100, function(value) {
-    var res, temp;
-    res = (1023 / value) - 1;
+    inputs[inputIdx] = value;
+    if (inputIdx < 20) {
+        inputIdx++;
+    } else {
+        inputIdx = 0;
+    }
+});
+
+setInterval(function() {
+    var avg = 0, res, temp;
+    for (i = 0; i < inputs.length; i++) {
+        avg += inputs[i];
+    }
+    avg /= inputs.length;
+
+    res = (1023 / avg) - 1;
     res = 10000 / res;
     temp = (res / 10000) ;
     temp = Math.log(temp);
@@ -61,32 +77,13 @@ adc.poll(channel, 100, function(value) {
     temp = temp + 1 / (25 + 273.15);
     temp = 1 / temp;
     temp = temp - 273.15;
+
     data.y = (Math.round(temp*100)/100).toString();
     data.x = getDateTime();
-});
 
-setInterval(function() {
     Plotly.plot(data, graphOptions, function (err, resp) {
         if (err) return console.log("ERROR: ", err);
+        console.log(data.x);
         console.log(resp);
     });
 }, 60000);
-
-/* Plotly live streaming example - use for flow event
-Plotly.plot(data, graphOptions, function (err, resp) {
-    if (err) return console.log("ERROR: ", err);
-
-    console.log(resp);
-
-    var stream = Plotly.stream(token, function (err, resp) {
-        if (err) return console.log(err);
-        console.log(resp);
-        clearInterval(loop);
-    });
-
-    var loop = setInterval(function() {
-        var data = {'x': inputs[0].time, 'y': inputs[0].value};
-        var streamObject = JSON.stringify(data);
-        stream.write(streamObject+'\n');
-    }, 1000);
-}); */
